@@ -1,0 +1,74 @@
+{
+  "name": "@sqds/multisig-kit",
+  "version": "0.1.0",
+  "description": "Solana Kit SDK for the Squads Multisig v4 program",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./idl.json": "./idl/squads_multisig_program.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "idl",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "solana",
+    "squads",
+    "multisig",
+    "solana-kit"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Squads-Protocol/multisig-kit.git"
+  },
+  "engines": {
+    "node": ">=20.18.0"
+  },
+  "scripts": {
+    "generate": "bun run scripts/generate.ts",
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build",
+    "e2e": "node scripts/e2e-surfpool.mjs"
+  },
+  "peerDependencies": {
+    "@solana/kit": "^8.3.0"
+  },
+  "devDependencies": {
+    "@codama/nodes-from-anchor": "^1.2.5",
+    "@codama/renderers-js": "^1.3.0",
+    "@solana/kit": "^8.6.0",
+    "@solana/web3.js": "^1.98.4",
+    "@sqds/multisig": "2.1.4",
+    "@types/node": "^22.0.0",
+    "codama": "^1.3.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.0",
+    "vitest": "^5.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/Squads-Protocol/multisig-kit#readme",
+  "bugs": {
+    "url": "https://github.com/Squads-Protocol/multisig-kit/issues"
+  }
+}
