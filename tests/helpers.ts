@@ -1,4 +1,4 @@
-/** Shared test helpers for diffing the Kit SDK against the OG web3.js-based `@sqds/multisig`. */
+/** Shared test helpers for diffing the Kit SDK against the original web3.js-based `@sqds/multisig`. */
 import type { TransactionInstruction } from "@solana/web3.js";
 import { AccountRole, address, type Instruction } from "@solana/kit";
 import { expect } from "vitest";
@@ -22,18 +22,21 @@ export function toKitInstruction(ix: TransactionInstruction): Instruction {
   };
 }
 
-/** Assert a Kit instruction matches an OG web3.js instruction: program, data, and account metas in order. */
-export function expectIxParity(kit: Instruction, og: TransactionInstruction): void {
-  expect(kit.programAddress).toBe(og.programId.toBase58());
-  expect(Buffer.from(kit.data ?? new Uint8Array())).toEqual(og.data);
+/**
+ * Assert a Kit instruction matches a web3.js instruction from the original SDK: program, data, and
+ * account metas in order.
+ */
+export function expectIxParity(kit: Instruction, legacy: TransactionInstruction): void {
+  expect(kit.programAddress).toBe(legacy.programId.toBase58());
+  expect(Buffer.from(kit.data ?? new Uint8Array())).toEqual(legacy.data);
 
   const kitAccounts = (kit.accounts ?? []).map((a) => ({
     address: a.address as string,
     role: a.role,
   }));
-  const ogAccounts = og.keys.map((k) => ({
+  const legacyAccounts = legacy.keys.map((k) => ({
     address: k.pubkey.toBase58(),
     role: web3KeyToRole(k.isSigner, k.isWritable),
   }));
-  expect(kitAccounts).toEqual(ogAccounts);
+  expect(kitAccounts).toEqual(legacyAccounts);
 }

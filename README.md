@@ -139,15 +139,16 @@ function toKitInstruction(ix: TransactionInstruction): Instruction {
   old wrapper produced a malformed instruction. Use `multisigCreateV2`.
 - `batchAddTransaction` keeps an unused `vaultIndex` param for call-site compatibility.
 - `batchExecuteTransaction` also returns the child's `ephemeralSignerBumps` and `message`.
-- `utils.transactionMessageToMultisigTransactionMessageBytes` no longer takes `vaultPda` (the OG ignored it), and
-  `utils.accountsForTransactionExecute` takes a Kit `rpc` instead of a `Connection`. `utils.getAvailableMemoSize` is
-  not ported.
+- `utils.transactionMessageToMultisigTransactionMessageBytes` no longer takes `vaultPda` (the original
+  ignored it), and `utils.accountsForTransactionExecute` takes a Kit `rpc` instead of a `Connection`.
+  `utils.getAvailableMemoSize` is not ported.
 - `decompileBase64Transaction` returns lookup tables as a map (`{ [tableAddress]: Address[] }`); to wrap the
   instructions, pass them to `vaultTransactionCreate` as
   `addressLookupTableAccounts: Object.entries(lookupTables).map(([table, addresses]) => ({ address: address(table), addresses }))`
   (`address` from `@solana/kit`).
-- New: the transaction-buffer flow (`transactionBufferCreate`, `transactionBufferExtend`, `transactionBufferClose`,
-  `vaultTransactionCreateFromBuffer`) for vault messages too large for one transaction.
+- New: high-level wrappers for the transaction-buffer flow (`transactionBufferCreate`,
+  `transactionBufferExtend`, `transactionBufferClose`, `vaultTransactionCreateFromBuffer`), for vault
+  messages too large for one transaction. The original SDK only exposes the raw generated builders.
 
 ## Development
 

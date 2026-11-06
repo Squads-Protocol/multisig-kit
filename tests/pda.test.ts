@@ -1,6 +1,6 @@
 /**
- * PDA parity: every derivation must match the OG `@sqds/multisig` SDK byte-for-byte (address + bump)
- * — same seeds, same derivations.
+ * PDA parity: every derivation must match the original `@sqds/multisig` SDK byte-for-byte
+ * (address + bump), same seeds, same derivations.
  */
 import * as multisig from "@sqds/multisig";
 import { PublicKey } from "@solana/web3.js";
@@ -27,12 +27,12 @@ const multisigPda = address(multisigPk.toBase58());
 const transactionPda = address(transactionPk.toBase58());
 
 const expectMatch = async (
-  og: [PublicKey, number],
+  legacy: [PublicKey, number],
   next: Promise<readonly [string, number]>,
 ) => {
   const [nextAddress, nextBump] = await next;
-  expect(nextAddress).toBe(og[0].toBase58());
-  expect(nextBump).toBe(og[1]);
+  expect(nextAddress).toBe(legacy[0].toBase58());
+  expect(nextBump).toBe(legacy[1]);
 };
 
 describe("PDA parity with @sqds/multisig", () => {
@@ -108,7 +108,7 @@ describe("PDA parity with @sqds/multisig", () => {
     );
   });
 
-  // No OG wrapper exists for the buffer PDA, so derive the expected value independently with
+  // No original wrapper exists for the buffer PDA, so derive the expected value independently with
   // web3.js's findProgramAddressSync using the seeds from transaction_buffer_create.rs.
   it("getTransactionBufferPda (vs independent web3.js derivation)", async () => {
     const bufferIndex = 0;

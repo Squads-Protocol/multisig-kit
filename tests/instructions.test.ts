@@ -1,7 +1,7 @@
 /**
  * Instruction builder parity: data bytes + account metas (address / signer / writable, in order)
- * must match the OG `@sqds/multisig` builders. Plus coverage for the new transaction-buffer flow,
- * which the OG SDK never exposed (asserted against generated discriminators + derived PDAs).
+ * must match the original `@sqds/multisig` builders. Plus coverage for the transaction-buffer
+ * wrappers, which the original SDK lacks (asserted against generated discriminators + derived PDAs).
  */
 import * as multisig from "@sqds/multisig";
 import { PublicKey, SystemProgram, TransactionMessage as Web3TransactionMessage } from "@solana/web3.js";

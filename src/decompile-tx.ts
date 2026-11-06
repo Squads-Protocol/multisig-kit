@@ -51,7 +51,7 @@ export interface DecompiledTransaction {
  * Decompile a base64-encoded versioned Solana transaction into kit-native instructions
  * and a lookup table address map.
  *
- * @param base64Tx  Base64-encoded wire transaction bytes (e.g. a Jupiter swap tx).
+ * @param base64Tx  Base64-encoded wire transaction bytes (e.g. a swap transaction from an aggregator).
  * @param rpc       A kit RPC client that supports `getMultipleAccounts` — used to resolve
  *                  address lookup table contents, e.g. `createSolanaRpc(rpcUrl)`.
  *

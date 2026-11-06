@@ -5,7 +5,7 @@
  * The on-chain program decodes this message with Rust `SmallVec<u8, _>` / `SmallVec<u16, _>`
  * length prefixes (NOT the standard u32-prefixed Borsh vec). The Codama-generated
  * `VaultTransactionMessage` codec uses default u32-prefixed arrays, so it CANNOT be used here.
- * This module mirrors the OG `@sqds/multisig` `transactionMessageBeet` byte-for-byte, ported to
+ * This module mirrors the original `@sqds/multisig` `transactionMessageBeet` byte-for-byte, ported to
  * `@solana/kit` codecs.
  */
 import {
@@ -52,7 +52,7 @@ export type TransactionMessage = {
   addressTableLookups: MessageAddressTableLookup[];
 };
 
-// `accountIndexes` is a u8-length-prefixed array of u8 (OG: smallArray(u8, u8)).
+// `accountIndexes` is a u8-length-prefixed array of u8 (original: smallArray(u8, u8)).
 const u8PrefixedU8ArrayEncoder = (): Encoder<number[]> =>
   getArrayEncoder(getU8Encoder(), { size: getU8Encoder() });
 const u8PrefixedU8ArrayDecoder = (): Decoder<number[]> =>
@@ -61,7 +61,7 @@ const u8PrefixedU8ArrayDecoder = (): Decoder<number[]> =>
 const compiledMsInstructionEncoder: Encoder<CompiledMsInstruction> = getStructEncoder([
   ["programIdIndex", getU8Encoder()],
   ["accountIndexes", u8PrefixedU8ArrayEncoder()],
-  // `data` is a u16-length-prefixed array of u8 (OG: smallArray(u16, u8)).
+  // `data` is a u16-length-prefixed array of u8 (original: smallArray(u16, u8)).
   ["data", getArrayEncoder(getU8Encoder(), { size: getU16Encoder() })],
 ]);
 const compiledMsInstructionDecoder: Decoder<CompiledMsInstruction> = getStructDecoder([

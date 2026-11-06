@@ -1,11 +1,11 @@
 /**
  * Kit port of web3.js `CompiledKeys` + `compileToWrappedMessageV0`, adapted for the "wrapped"
- * VaultTransaction message. Mirrors OG `@sqds/multisig` `utils/compiled-keys.ts` +
+ * VaultTransaction message. Mirrors the original `@sqds/multisig` `utils/compiled-keys.ts` +
  * `utils/compileToWrappedMessageV0.ts`.
  *
- * Key difference from stock web3.js (carried over from OG): instruction program IDs are NOT marked
- * as `isInvoked`, so they may be sourced from Address Lookup Tables. This compresses the wrapped
- * message and helps stay under the tx size limit during `vaultTransactionCreate`.
+ * Key difference from stock web3.js (carried over from `@sqds/multisig`): instruction program IDs
+ * are NOT marked as `isInvoked`, so they may be sourced from Address Lookup Tables. This compresses
+ * the wrapped message and helps stay under the tx size limit during `vaultTransactionCreate`.
  */
 import {
   type Address,
@@ -75,8 +75,8 @@ class CompiledKeys {
     payerKeyMeta.isWritable = true;
 
     for (const ix of instructions) {
-      // OG difference: program IDs are deliberately NOT marked invoked (stock web3.js sets
-      // isInvoked = true here), so they can be sourced from Address Lookup Tables. getOrInsertDefault
+      // Unlike stock web3.js (which sets isInvoked = true here), program IDs are deliberately NOT
+      // marked invoked, so they can be sourced from Address Lookup Tables. getOrInsertDefault
       // already initializes isInvoked = false, so this is an insert, not an assignment.
       getOrInsertDefault(ix.programAddress);
       for (const account of ix.accounts ?? []) {
@@ -153,7 +153,7 @@ class CompiledKeys {
     const drainedKeys: Address[] = [];
 
     // Deliberately deletes from `keyMetaMap` mid-iteration — spec-safe for a JS Map (a deleted entry
-    // is simply skipped, already-visited entries are unaffected). Ported 1:1 from the OG web3.js
+    // is simply skipped, already-visited entries are unaffected). Ported 1:1 from stock web3.js
     // `CompiledKeys.drainKeysFoundInLookupTable`.
     for (const [address, keyMeta] of this.keyMetaMap.entries()) {
       if (keyMetaFilter(keyMeta)) {

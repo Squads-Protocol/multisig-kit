@@ -16,7 +16,7 @@ import { SYSTEM_PROGRAM_ADDRESS } from "../utils";
  * Materialize a VaultTransaction from a previously assembled transaction buffer. The transaction
  * message is read from the buffer on-chain; the program requires the instruction's own
  * `transactionMessage` to be exactly 6 zero bytes, which is the default.
- * Not present in the OG `@sqds/multisig` SDK.
+ * The original `@sqds/multisig` SDK has no wrapper for this, only the raw generated builder.
  */
 export async function vaultTransactionCreateFromBuffer({
   multisigPda,

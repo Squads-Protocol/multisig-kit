@@ -1,9 +1,10 @@
 /**
  * PDA derivations for the Squads Multisig v4 program.
  *
- * Same function names, same seeds, and same `[address, bump]` tuple shape as the OG
- * `@sqds/multisig` SDK. The ONE deliberate API difference: derivations are **async** because Kit's
- * `getProgramDerivedAddress` is async (there is no synchronous PDA helper in `@solana/kit`).
+ * Same function names, same seeds, and same `[address, bump]` tuple shape as the original
+ * `@sqds/multisig` SDK. Apart from Kit types (`Address` in place of `PublicKey`), the one API
+ * difference: derivations are **async** because Kit's `getProgramDerivedAddress` is async (there is
+ * no synchronous PDA helper in `@solana/kit`).
  *
  * Seeds verified against `programs/squads_multisig_program/src/state/seeds.rs` in the v4 repo.
  */
@@ -191,7 +192,7 @@ export function getSpendingLimitPda({
 }
 
 /**
- * Transaction buffer PDA. The OG SDK never exposed a wrapper for the buffer flow; seeds are taken
+ * Transaction buffer PDA. The original SDK never exposed a wrapper for the buffer flow; seeds are taken
  * from `transaction_buffer_create.rs`:
  * `[SEED_PREFIX, multisig, SEED_TRANSACTION_BUFFER, creator, bufferIndex (u8 LE)]`.
  */

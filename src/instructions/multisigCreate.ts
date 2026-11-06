@@ -3,7 +3,7 @@ import type { Address } from "@solana/kit";
 /**
  * @deprecated v1 multisig creation is deprecated on-chain. The v1 instruction takes **no serialized
  * args** (its `DataArgs` type is `{}`), so `threshold`, `members`, `configAuthority`, `timeLock`, and
- * `memo` cannot be set through it — the OG `@sqds/multisig` wrapper accepted them but silently
+ * `memo` cannot be set through it — the original `@sqds/multisig` wrapper accepted them but silently
  * discarded them, producing a malformed instruction. This wrapper refuses instead of trapping callers.
  *
  * Use {@link multisigCreateV2}. If you genuinely need the raw v1 instruction, call

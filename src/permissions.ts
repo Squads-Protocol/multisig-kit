@@ -1,5 +1,5 @@
 /**
- * Member permission helpers — bitmask, ported from the OG `@sqds/multisig` `utils.ts`.
+ * Member permission helpers — bitmask, ported from the original `@sqds/multisig` `utils.ts`.
  * Pure (no Solana deps). `Permissions` matches the generated `Permissions` type (`{ mask: number }`).
  */
 import type { Permissions as IPermissions } from "./generated";

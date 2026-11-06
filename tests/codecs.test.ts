@@ -1,7 +1,7 @@
 /**
  * Codec parity: the compact `transactionMessage` serialization (and the full message-compilation
- * pipeline) must produce byte-identical output to the OG `@sqds/multisig` beet implementation, since
- * those bytes are what the on-chain program deserializes.
+ * pipeline) must produce byte-identical output to the original `@sqds/multisig` beet implementation,
+ * since those bytes are what the on-chain program deserializes.
  */
 import * as multisig from "@sqds/multisig";
 import {
@@ -18,7 +18,7 @@ import { transactionMessageToMultisigTransactionMessageBytes } from "../src/util
 import { toKitInstruction } from "./helpers";
 
 describe("transactionMessage codec parity", () => {
-  it("serializes a hand-built message identically to the OG beet codec", () => {
+  it("serializes a hand-built message identically to the original beet codec", () => {
     const keys = [PublicKey.unique(), PublicKey.unique(), PublicKey.unique()];
     const shared = {
       numSigners: 1,
@@ -27,7 +27,7 @@ describe("transactionMessage codec parity", () => {
       instructions: [{ programIdIndex: 2, accountIndexes: [0, 1], data: [2, 0, 0, 0, 255] }],
     };
 
-    const [ogBytes] = multisig.types.transactionMessageBeet.serialize({
+    const [legacyBytes] = multisig.types.transactionMessageBeet.serialize({
       ...shared,
       accountKeys: keys,
       addressTableLookups: [],
@@ -38,10 +38,10 @@ describe("transactionMessage codec parity", () => {
       addressTableLookups: [],
     });
 
-    expect(Buffer.from(nextBytes)).toEqual(ogBytes);
+    expect(Buffer.from(nextBytes)).toEqual(legacyBytes);
   });
 
-  it("compiles + serializes a real transfer message identically to the OG pipeline", () => {
+  it("compiles + serializes a real transfer message identically to the original pipeline", () => {
     const vaultPk = PublicKey.unique();
     const destPk = PublicKey.unique();
     const blockhash = PublicKey.unique().toBase58();
@@ -52,13 +52,13 @@ describe("transactionMessage codec parity", () => {
       lamports: 1_000_000n,
     });
 
-    const ogMessage = new Web3TransactionMessage({
+    const legacyMessage = new Web3TransactionMessage({
       payerKey: vaultPk,
       recentBlockhash: blockhash,
       instructions: [transferIx],
     });
-    const ogBytes = multisig.utils.transactionMessageToMultisigTransactionMessageBytes({
-      message: ogMessage,
+    const legacyBytes = multisig.utils.transactionMessageToMultisigTransactionMessageBytes({
+      message: legacyMessage,
       vaultPda: vaultPk,
     });
 
@@ -69,10 +69,10 @@ describe("transactionMessage codec parity", () => {
       },
     });
 
-    expect(Buffer.from(nextBytes)).toEqual(Buffer.from(ogBytes));
+    expect(Buffer.from(nextBytes)).toEqual(Buffer.from(legacyBytes));
   });
 
-  it("compiles + serializes a message WITH an address lookup table identically to the OG pipeline", () => {
+  it("compiles + serializes a message WITH an address lookup table identically to the original pipeline", () => {
     const vaultPk = PublicKey.unique();
     const destPk = PublicKey.unique();
     const altKey = PublicKey.unique();
@@ -86,7 +86,7 @@ describe("transactionMessage codec parity", () => {
       lamports: 5_000n,
     });
 
-    const ogAlt = new AddressLookupTableAccount({
+    const legacyAlt = new AddressLookupTableAccount({
       key: altKey,
       state: {
         deactivationSlot: 2n ** 64n - 1n,
@@ -96,13 +96,13 @@ describe("transactionMessage codec parity", () => {
         addresses: altAddresses,
       },
     });
-    const ogBytes = multisig.utils.transactionMessageToMultisigTransactionMessageBytes({
+    const legacyBytes = multisig.utils.transactionMessageToMultisigTransactionMessageBytes({
       message: new Web3TransactionMessage({
         payerKey: vaultPk,
         recentBlockhash: PublicKey.unique().toBase58(),
         instructions: [transferIx],
       }),
-      addressLookupTableAccounts: [ogAlt],
+      addressLookupTableAccounts: [legacyAlt],
       vaultPda: vaultPk,
     });
 
@@ -117,7 +117,7 @@ describe("transactionMessage codec parity", () => {
     });
 
     // Sanity: the lookup actually triggered (a no-op ALT would make this test meaningless).
-    expect(ogBytes.length).toBeGreaterThan(0);
-    expect(Buffer.from(nextBytes)).toEqual(Buffer.from(ogBytes));
+    expect(legacyBytes.length).toBeGreaterThan(0);
+    expect(Buffer.from(nextBytes)).toEqual(Buffer.from(legacyBytes));
   });
 });

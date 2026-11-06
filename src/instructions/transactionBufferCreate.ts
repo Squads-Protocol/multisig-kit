@@ -14,7 +14,8 @@ import { getTransactionBufferPda } from "../pda";
 /**
  * Create a transaction buffer. The buffer lets large transaction messages be uploaded in chunks
  * (create + repeated extend) before materializing a VaultTransaction via
- * `vaultTransactionCreateFromBuffer`. Not present in the OG `@sqds/multisig` SDK.
+ * `vaultTransactionCreateFromBuffer`. The original `@sqds/multisig` SDK has no wrapper for this,
+ * only the raw generated builder.
  *
  * `finalBufferHash` is the SHA-256 of the fully assembled message; `finalBufferSize` is its total
  * byte length; `buffer` is the initial slice to upload.

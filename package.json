@@ -1,6 +1,6 @@
 {
   "name": "@sqds/multisig-kit",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Solana Kit SDK for the Squads Multisig v4 program",
   "license": "MIT",
   "type": "module",

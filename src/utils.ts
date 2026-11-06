@@ -1,5 +1,5 @@
 /**
- * Utilities ported from OG `@sqds/multisig` `utils.ts`, rebuilt on `@solana/kit`.
+ * Utilities ported from the original `@sqds/multisig` `utils.ts`, rebuilt on `@solana/kit`.
  */
 import {
   type AccountMeta,
@@ -179,7 +179,7 @@ function toRole(isSigner: boolean, isWritable: boolean): AccountRole {
 }
 
 /**
- * Populate the remaining accounts required to execute a VaultTransaction. Kit port of the OG
+ * Populate the remaining accounts required to execute a VaultTransaction. Kit port of the original
  * `accountsForTransactionExecute`; takes a Kit RPC instead of a web3.js `Connection`.
  */
 export async function accountsForTransactionExecute({
