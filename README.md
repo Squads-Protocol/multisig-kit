@@ -151,6 +151,8 @@ function toKitInstruction(ix: TransactionInstruction): Instruction {
 
 ## Development
 
+Node 22.12 or later (for the test runner; the published package needs only 20.18).
+
 ```sh
 npm install
 npm run typecheck
