@@ -8,11 +8,8 @@
  * Pipeline:
  *   1. Decode base64 bytes → kit `Transaction` (messageBytes + signatures).
  *   2. Decode `messageBytes` → `CompiledTransactionMessage` (has `addressTableLookups`).
- *   3. `decompileTransactionMessageFetchingLookupTables` resolves ALT accounts via RPC and
- *      returns a `CompilableTransactionMessage`; table-sourced accounts stay `AccountLookupMeta`s
- *      that carry their resolved `address`.
- *   4. Collect ALT addresses from the compiled message; call `fetchAddressesForLookupTables`
- *      to build the `AddressesByLookupTableAddress` map for the caller.
+ *   3. Fetch the address lookup tables once and use the same map to decompile the message and
+ *      return the tables to the caller.
  *
  * Invariants:
  *   - No IO beyond what kit provides through the supplied `rpc`.
@@ -20,7 +17,7 @@
  */
 
 import {
-  decompileTransactionMessageFetchingLookupTables,
+  decompileTransactionMessage,
   fetchAddressesForLookupTables,
   getBase64Encoder,
   getCompiledTransactionMessageDecoder,
@@ -69,12 +66,7 @@ export const decompileBase64Transaction = async (
   //    For versioned (v0) transactions this includes `addressTableLookups`.
   const compiledMessage = getCompiledTransactionMessageDecoder().decode(tx.messageBytes);
 
-  // 3. Decompile: kit fetches ALT account data via RPC and resolves every ALT account
-  //    reference to its concrete address (kept as an `AccountLookupMeta` with `lookupTableAddress`).
-  const decompiled = await decompileTransactionMessageFetchingLookupTables(compiledMessage, rpc);
-
-  // 4. Build the lookup table map from the compiled message's addressTableLookups.
-  //    `fetchAddressesForLookupTables` returns Record<Address, Address[]>.
+  // 3. Use one snapshot for both the decompiled instructions and the returned lookup tables.
   const altAddresses =
     "addressTableLookups" in compiledMessage && compiledMessage.addressTableLookups != null
       ? compiledMessage.addressTableLookups.map((alt) => alt.lookupTableAddress)
@@ -82,6 +74,9 @@ export const decompileBase64Transaction = async (
 
   const lookupTables: AddressesByLookupTableAddress =
     altAddresses.length > 0 ? await fetchAddressesForLookupTables(altAddresses, rpc) : {};
+  const decompiled = decompileTransactionMessage(compiledMessage, {
+    addressesByLookupTableAddress: lookupTables,
+  });
 
   return {
     instructions: decompiled.instructions ?? [],
